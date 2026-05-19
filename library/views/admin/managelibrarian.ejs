@@ -1,0 +1,247 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <%- include('../partials/admin/headerFiles', {title: 'AKKHOR | Home 1'}) %>
+
+    <style>
+        .error{
+            color: red;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body onload="ReadlibrarianData()">
+
+<!-- Preloader Start Here -->
+<div id="preloader"></div>
+<!-- Preloader End Here -->
+
+<div id="wrapper" class="wrapper bg-ash">
+    <!-- Header Menu Area Start Here -->
+    <%- include('../partials/admin/topbar') %>
+    <!-- Header Menu Area End Here -->
+
+    <!-- Page Area Start Here -->
+    <div class="dashboard-page-one">
+        <!-- Sidebar Area Start Here -->
+        <%-include('../partials/adminsidebar')%>
+        <!-- Sidebar Area End Here -->
+
+        <div class="dashboard-content-one">
+            <!-- Breadcubs Area Start Here -->
+            <div class="breadcrumbs-area">
+            </div>
+            <!-- Breadcubs Area End Here -->
+
+            <!-- Add libraian Area ends Here -->
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>Add New Librarian</h3>
+                        </div>
+                    </div>
+
+                    <form class="new-added-form" id="form">
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control"  id="name" placeholder="Enter your name" required>
+                            </div>
+
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
+
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label for="name" class="form-group">Select Gender</label>
+                                <select id="gender" class="form-control"  name="gender" required>
+                                    <option value="" selected disabled>Choose...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label for="date" class="form-label">Date Of joining</label>
+                                <input type="date" class="form-control" id="date" name="date" required>
+                            </div>
+                            <p class="error" id="error-message" style="color: red ; font-size: 10px ; padding-left: 15px"></p>
+                        </div>
+
+                        <button type="button" onclick="RegisterNow()" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">
+                            Add Librarian
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>List of Librarian</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped  table-light table-hover mt-3">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Gender</th>
+                                <th>Date Of Joining</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="records"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+           <%- include('../partials/admin/footer.ejs') %>
+        </div>
+    </div>
+    <!-- Page Area End Here -->
+</div>
+
+
+<%- include('../partials/admin/footerScripts.ejs') %>
+
+<script>
+    function passwordGenerator() {
+        const length = 8;
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        let pass = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * chars.length);
+            pass += chars[randomIndex];
+        }
+        return pass;
+    }
+
+    async function RegisterNow()
+    {
+        if($("#form").valid())
+        {
+            var password = passwordGenerator();
+
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var gender = document.getElementById("gender").value;
+            var date = document.getElementById("date").value;
+            var errorMessage = document.getElementById("error-message");
+
+            var res = await fetch("/admin/librarian",{
+                method:'POST',
+                headers:{'Content-Type': 'application/json'},
+                body:JSON.stringify({
+                    name:name,
+                    email:email,
+                    password:password,
+                    gender:gender,
+                    date:date
+                })
+            });
+
+            sendEmail(email, password, name);
+
+            res = await res.json();
+
+            if(res.error){
+                Qual.errordb("Error", res.message);
+            } else {
+                ReadlibrarianData();
+                Qual.successdb("Success", res.message);
+                document.getElementById("form").reset();
+            }
+        }
+    }
+
+    async function ReadlibrarianData()
+    {
+        try{
+
+            var res =await fetch('/admin/viewlibrariandata');
+            res = await res.json();
+            var records = res.records;
+           // console.log(records);
+            var html=``;
+            for(var x of records)
+            {
+                html+=`<tr>`
+                html+=`<td>${x.id}</td>`
+                html+=`<td>${x.name}</td>`
+                html+=`<td>${x.email}</td>`
+                html+=`<td>${x.gender}</td>`
+                html+=`<td>${x.date}</td>`
+                html+=`<td style="width: 100px">${x.status}</td>`
+                
+                const isActive = x.status === 'Active';
+
+                html += `
+                <td style="width: 100px">
+                    <button
+                    type="button"
+                    class="btn btn-${isActive ? 'danger' : 'success'} btn-sm"
+                    onclick="${isActive ? 'deactivate' : 'activate'}(${x.id})">
+                    ${isActive ? 'Deactivate' : 'Activate'}
+                    </button>
+                </td>
+                `;
+
+                html+=`</tr>`
+            }
+            document.getElementById('records').innerHTML=html;
+        }catch(e)
+        {
+            console.log(e.message);
+        }
+    }
+
+    async function deactivate(id){
+        try{
+            var status ='Deactive';
+            var res = await fetch('/admin/deactivate/'+ id, {method:'PUT',
+                headers:{'Content-Type':'application/json'},
+                body: JSON. stringify({
+                    status:status
+                })
+            });
+            res = await res.json();
+            ReadlibrarianData()
+        }catch (e)
+        {
+            console.log(e.message);
+        }
+    }
+
+    async function activate(id){
+        try{
+            var status ='Active';
+            var res = await fetch('/admin/activate/'+ id, {method:'PUT',
+                headers:{'Content-Type':'application/json'},
+                body: JSON. stringify({
+                    status:status
+                })
+            });
+            res = await res.json();
+            ReadlibrarianData()
+        }catch (e)
+        {
+            console.log(e.message);
+        }
+    }
+</script>
+
+</body>
+</html>

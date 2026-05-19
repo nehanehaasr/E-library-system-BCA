@@ -1,0 +1,304 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <%- include('../partials/librarian/headerFiles', {title: 'AKKHOR | Manage Books' }) %>
+
+    <style>
+        .table td,
+        .table th {
+            vertical-align: middle;
+        }
+
+        thead {
+            font-size: 14px !important;
+        }
+
+        tbody {
+            font-size: 12px !important;
+        }
+
+        tbody tr td img {
+            width: 50px;
+            height: 70px;
+        }
+    </style>
+</head>
+
+<body onload="fetchcategories(); FetchBooks();">
+
+<!-- Preloader Start Here -->
+<div id="preloader"></div>
+<!-- Preloader End Here -->
+
+<div id="wrapper" class="wrapper bg-ash">
+    <!-- Header Menu Area Start Here -->
+    <%- include('../partials/librarian/topHeader') %>
+    <!-- Header Menu Area End Here -->
+
+    <!-- Page Area Start Here -->
+    <div class="dashboard-page-one">
+        <!-- Sidebar Area Start Here -->
+        <%- include('../partials/librarian/sidebar') %>
+        <!-- Sidebar Area End Here -->
+
+        <div class="dashboard-content-one">
+            <!-- Breadcubs Area Start Here -->
+            <div class="breadcrumbs-area"></div>
+            <!-- Breadcubs Area End Here -->
+
+            <!-- Add New Book Area ends Here -->
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>Add New Book</h3>
+                        </div>
+                    </div>
+
+                    <form class="new-added-form" id="bookForm">
+                        <div class="row">
+                            <div class="col-lg-6 col-12 form-group">
+                                <label for="title">Book Title</label>
+                                <input type="text" placeholder="Book Title" id="title" class="form-control" required>
+                            </div>
+
+                            <div class="col-lg-6 col-12 form-group">
+                                <label for="author">Author Name(s)</label>
+                                <input type="text" placeholder="Author Name(s)"  id="author"  name="author" class="form-control" required>
+                            </div>
+
+                            <div class="col-lg-6 col-12 form-group">
+                                <label for="isbn">ISBN Number (unique book identifier)</label>
+                                <input type="number" placeholder="ISBN Number"  id="isbn"  name="isbn" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6 col-12 form-group">
+                                <label for="categories">Category / Genre</label>
+                                <select id="categories" class="form-control" name="categories" required></select>
+                            </div>
+
+                            <div class="col-lg-6 col-12 form-group">
+                                <label for="publisher">Publisher Name</label>
+                                <input type="text" placeholder="Publisher Name"  id="publisher"  name="publisher" class="form-control" required>
+                            </div>
+
+                            <div class="col-lg-6 col-12 form-group">
+                                <label for="year">Publication Year</label>
+                                <input type="number" placeholder="Publisher Year"  id="year"  name="year" class="form-control" maxlength="4" minlength="4" required>
+                            </div>
+
+                            <div class="col-md-6 col-12 form-group">
+                                <label for="photo">Cover Photo (jpg/png)</label>
+                                <input type="file" id="photo" name="photo" class="form-control pt-3" accept=".jpg,.jpeg,.png" required>
+                            </div>
+
+                            <div class="col-md-6 col-12 form-group">
+                                <label for="photo">PDF</label>
+                                <input type="file" id="pdf" name="pdf" class="form-control pt-3" accept="application/pdf" required>
+                            </div>
+
+                            <!-- <select class="col-md-6 col-12 form-group">
+                                <option value="0">Free</option>
+                                <option value="1">Paid</option>
+                            </select> -->
+
+                            <div class="col-lg-6 col-12 form-group">
+                                <label for="price">Price</label>
+                                <input type="number" placeholder="Paid"  id="price"  name="price" class="form-control" maxlength="4" minlength="4" required>
+                            </div>
+
+
+                            <div class="col-12 form-group mg-t-8">
+                                <button type="button" onclick="AddBook()" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+           
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>List of Books</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-light table-hover mt-3 mb-0">
+                            <thead>
+                            <tr>
+                                <th>Category / Genre</th>
+                                <th>Book Title</th>
+                                <th>Author Name(s)</th>
+                                <th>ISBN Number</th>
+                                <th>Publisher Name</th>
+                                <th>Publication Year</th>
+                                <th>Photo</th>
+                                <th>PDF</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="records"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <%- include('../partials/admin/footer') %>
+        </div>
+    </div>
+    <!-- Page Area End Here -->
+</div>
+
+<%- include('../partials/librarian/footerScripts') %>
+
+<script>
+    async function fetchcategories(){
+
+        var res = await fetch('/fetchcategory');
+        res = await res.json();
+        var records = res.records;
+        // console.log(records);
+        var html =`<option value="">Select category</option>`
+        for( var x of records)
+        {
+            html+=`<option value="${x.id}">${x.name}</option>`
+        }
+        document.getElementById("categories").innerHTML=html;
+    }
+
+    async function AddBook()
+    {
+        if($("#bookForm").valid())
+        {
+            const title = document.getElementById("title").value;
+            const author = document.getElementById("author").value;
+            const isbn = document.getElementById("isbn").value;
+            const categoryId = document.getElementById("categories").value;
+            const publisher = document.getElementById("publisher").value;
+            const year = document.getElementById("year").value;
+            const photo = document.getElementById("photo").files[0];
+            const pdf = document.getElementById("pdf").files[0];
+            const price = document.getElementById("price").value;
+            // Allowed types
+            const imageTypes = ["image/jpeg", "image/png"];
+
+            // Max sizes
+            const maxImageSize = 2 * 1024 * 1024; // 2MB
+
+            if (photo) {
+                if (!imageTypes.includes(photo.type)) {
+                    alert("Cover photo must be JPG or PNG");
+                    e.preventDefault();
+                    return;
+                }
+                if (photo.size > maxImageSize) {
+                    alert("Cover photo size must be under 2MB");
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            const pdfTypes = ["application/pdf"];
+
+            // Max sizes
+            const maxPdfSize = 20 * 1024 * 1024; // 5MB
+
+            if (pdf) {
+                if (!pdfTypes.includes(pdf.type)) {
+                    alert("only pdf file is allowed");
+                    return;
+                }
+                if (pdf.size > maxPdfSize) {
+                    alert("PDF size must be under 5MB");
+                    return;
+                }
+            }
+
+
+            const formData = new FormData();
+            formData.append('title', title)
+            formData.append('author', author)
+            formData.append('isbn', isbn)
+            formData.append('categoryId', categoryId)
+            formData.append('publisher', publisher)
+            formData.append('year', year)
+            formData.append('photo', photo)
+            formData.append('pdf', pdf)
+            formData.append('price', price)
+
+            let  res = await fetch("/addbookdata",{
+                method:"POST",
+                body:formData
+            });
+            res = await res.json();
+         
+            
+            if(res.error){
+                Qual.errordb("Error", res.message);
+            } else {
+                FetchBooks();
+                document.getElementById("bookForm").reset();
+                Qual.successdb("Added Successfully", res.message);
+            }
+        }
+    }
+
+    async function FetchBooks()
+    {
+        try{
+            let res =await fetch('/viewsubcategory');
+            res = await res.json();
+
+            const records = res.records;
+
+            let html=``;
+
+            for(var x of records)
+            {
+                html+=`<tr>`
+                html+=`<td>${x.category.name}</td>`
+                html+=`<td>${x.title}</td>`
+                html+=`<td>${x.author}</td>`
+                html+=`<td>${x.isbn}</td>`
+                html+=`<td>${x.publisherName}</td>`
+                html+=`<td>${x.publishYear}</td>`
+                html+=`<td><img src="${x.photo}"></td>`
+                html+=`<td>${x.pdf}</td>`
+                html+=`<td>${x.price}</td>`
+                html+=`<td>${x.status}</td>`
+                html+=`<td><button type="button" class ="btn btn-danger btn-sm" onclick="Deletedata(${x.id})">Delete</button></td>`
+                html+=`</tr>`
+            }
+
+            document.getElementById('records').innerHTML = html;
+        }catch(e)
+        {
+            console.log(e.message);
+        }
+    }
+
+    async function Deletedata(id)
+    {
+        if(confirm('Are you sure to delete this book?')) {
+            var res = await fetch('/deletesubcategory/' + id, { method: 'DELETE'});
+            res = await res.json();
+
+            if(res.error){
+                Qual.errordb(res?.message, '');
+            } else {
+                FetchBooks();
+                Qual.successdb(res?.message, '');
+            }
+        }
+    }
+
+</script>
+
+</body>
+
+</html>

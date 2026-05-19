@@ -1,0 +1,583 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <%- include('../partials/librarian/headerFiles', {
+        title: 'AKKHOR | Issue Books'
+    }) %>
+
+    <style>
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+            font-size: 2rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: rgba(244, 243, 244, 0.93);
+            background-clip: padding-box;
+            border: 2px solid #ced4da;
+            border-radius: 0.4rem;
+        }
+
+        .error {
+            color: red;
+            font-size: 15px;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+
+<!-- Preloader -->
+<div id="preloader"></div>
+
+<div id="wrapper" class="wrapper bg-ash">
+
+    <!-- Header -->
+    <%- include('../partials/librarian/topHeader') %>
+
+    <div class="dashboard-page-one">
+
+        <!-- Sidebar -->
+        <%- include('../partials/librarian/sidebar') %>
+
+        <!-- Content -->
+        <div class="dashboard-content-one">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumbs-area"></div>
+
+            <!-- Issue Book Form -->
+            <div class="card height-auto">
+                <div class="card-body">
+
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>Issue Books - Student Detail</h3>
+                        </div>
+                    </div>
+
+                    <form class="new-added-form" id="registrationForm">
+                        <div class="row">
+
+                            <!-- Degree -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Select Degree-Type</label>
+                                <select
+                                    id="categories"
+                                    name="degree"
+                                    class="form-control"
+                                    onchange="fetchcourserbyid(this.value)"
+                                    required>
+                                    <option>Select Degree</option>
+                                </select>
+                            </div>
+
+                            <!-- Course -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Select Course-Type</label>
+                                <select
+                                    id="categories1"
+                                    name="course"
+                                    class="form-control"
+                                    onchange="fetchbranchbyid(this.value)"
+                                    required>
+                                    <option>Select Course</option>
+                                </select>
+                            </div>
+
+                            <!-- Branch -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Select Branch</label>
+                                <select
+                                    id="categories2"
+                                    name="branch"
+                                    class="form-control"
+                                    onchange="fetchstudent(this.value)"
+                                    required>
+                                    <option>Select Branch</option>
+                                </select>
+                            </div>
+
+                            <!-- Student -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Select Student</label>
+                                <select
+                                    id="categories3"
+                                    name="student"
+                                    class="form-control"
+                                    required>
+                                    <option>Select Student</option>
+                                </select>
+                            </div>
+
+                            <!-- Book Category -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Select Book Category</label>
+                                <select
+                                    id="categories4"
+                                    name="cat"
+                                    class="form-control"
+                                    onchange="fetchbook(this.value)"
+                                    required>
+                                    <option>Select Category</option>
+                                </select>
+                            </div>
+
+                            <!-- Book -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Select Book</label>
+                                <select
+                                    id="categories5"
+                                    name="book"
+                                    class="form-control"
+                                    required>
+                                    <option>Select Book</option>
+                                </select>
+                            </div>
+
+                            <!-- Issue Date -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Issue Date</label>
+                                <input
+                                    type="text"
+                                    id="issuedate"
+                                    name="issue"
+                                    class="form-select"
+                                    required>
+                            </div>
+
+                            <!-- Return Date -->
+                            <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                <label>Return Date</label>
+                                <input
+                                    type="text"
+                                    id="returndate"
+                                    name="return"
+                                    class="form-select"
+                                    required>
+                            </div>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="issueBookHandler()"
+                            class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">
+                            Issue Book
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- Issued Books Table -->
+            <div class="card height-auto">
+                <div class="card-body">
+
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>Issued Books to Students</h3>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered table-striped table-light table-hover mt-3 mb-0 align-middle">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Student Name</th>
+                            <th>Book Name</th>
+                            <th>Issued Date</th>
+                            <th>Return Date</th>
+                            <th>Fine</th>
+                            <th>Payment Mode</th>
+                            <th>Transaction Id/Remarks</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="records"></tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <%- include('../partials/admin/footer') %>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="fineModal" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-danger">Fine Payment</h4>
+
+                <button type="button" onclick="hideModal()" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="fineForm">
+                    <p class="text-center text-danger mb-0"><strong>Fine Amount:</strong> ₹ <span id="fineAmountText"></span></p>
+
+                    <div class="mb-3">
+                        <label>Payment Mode</label>
+                        <select id="paymentMode" name="paymentMode" class="form-control" required>
+                            <option value="">Select Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Online">Online</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Card">Card</option>
+                        </select>
+                    </div>
+
+                    <div id="transactionDiv">
+                        <label>Transaction ID/Remarks</label>
+                        <input 
+                            type="text" 
+                            id="transactionId"
+                            name="transactionId"
+                            placeholder="Enter transaction id/remarks" 
+                            class="form-control" 
+                            required
+                        >
+                    </div>
+
+                    <div style="margin-top:15px;">
+                        <button class="btn btn-primary" type="button" onclick="submitFine()">Submit Payment</button>
+                        <button class="btn btn-danger" type="button" onclick="hideModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/librarian/footerScripts') %>
+
+<!-- jQuery UI -->
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+<!-- Full Calendar -->
+<script src="/js/fullcalendar.min.js"></script>
+
+<script>
+    function hideModal() {
+        $("#fineModal").modal("hide");
+    }
+
+    /* ---------- Date Picker ---------- */
+    $(function () {
+        $("#issuedate").datepicker({ minDate: 0, maxDate: "+1M +10D" });
+        $("#returndate").datepicker({ minDate: 0, maxDate: "+1M +10D" });
+    });
+
+    /* ---------- Fetch Dropdown Data ---------- */
+
+    $(document).ready(() => {
+        fetchDegree();        // Fetch list of degrees
+        fetchCategories();    // Fetch list of categories
+        fetchIssuedBooks();  // Fetch books issued to students
+    });
+
+    function resetDropdown(course, branch, student) {
+        if(course) {
+            document.getElementById("categories1").innerHTML = `<option value="">Select Course</option>`;
+        }
+
+        if(branch) {
+            document.getElementById("categories2").innerHTML = `<option value="">Select Branch</option>`;
+        }
+
+        if(student) {
+            document.getElementById("categories3").innerHTML = `<option value="">Select Student</option>`;
+        }
+    }
+
+    async function fetchDegree() {
+        const res = await fetch('/admin/fetchdegree');
+        const data = await res.json();
+
+        let html = `<option value="">Select Degree</option>`;
+        data.records.forEach(x => {
+            html += `<option value="${x.id}">${x.name}</option>`;
+        });
+
+        document.getElementById("categories").innerHTML = html;
+    }
+
+    async function fetchcourserbyid(degreeId) {
+        const res = await fetch('/admin/fetchcoursebyid/' + degreeId);
+        const data = await res.json();
+
+        let html = `<option value="">Select Course</option>`;
+        data.records.forEach(x => {
+            html += `<option value="${x.id}">${x.name}</option>`;
+        });
+
+        document.getElementById("categories1").innerHTML = html;
+        
+        resetDropdown(false, true, true);
+    }
+
+    async function fetchbranchbyid(courseId) {
+        const res = await fetch('/admin/fetchbranchbyid/' + courseId);
+        const data = await res.json();
+
+        let html = `<option value="">Select Branch</option>`;
+        data.records.forEach(x => {
+            html += `<option value="${x.id}">${x.name}</option>`;
+        });
+
+        document.getElementById("categories2").innerHTML = html;
+
+        resetDropdown(false, false, true);
+    }
+
+    async function fetchstudent(branchId) {
+        const res = await fetch('/fetchstudent/' + branchId);
+        const data = await res.json();
+
+        let html = `<option value="">Select Student</option>`;
+        data.records.forEach(x => {
+            html += `<option value="${x.id}">${x.name}</option>`;
+        });
+
+        document.getElementById("categories3").innerHTML = html;
+    }
+
+    async function fetchCategories() {
+        const res = await fetch('/fetchcategory');
+        const data = await res.json();
+
+        let html = `<option value="">Select Category</option>`;
+        data.records.forEach(x => {
+            html += `<option value="${x.id}">${x.name}</option>`;
+        });
+
+        document.getElementById("categories4").innerHTML = html;
+    }
+
+    async function fetchbook(categoryId) {
+        const res = await fetch('/fetchbook/' + categoryId);
+        const data = await res.json();
+
+        let html = `<option value="">Select Book</option>`;
+        data.records.forEach(x => {
+            html += `<option value="${x.id}">${x.title}</option>`;
+        });
+
+        document.getElementById("categories5").innerHTML = html;
+    }
+
+    /* ---------- Issue & Return Logic ---------- */
+
+    async function fetchIssuedBooks() {
+        try {
+            const res = await fetch('/issuedata');
+            const { records } = await res.json();
+
+            let html = '';
+
+            if (!records || records.length === 0) {
+                document.getElementById('records').innerHTML =
+                    `<tr><td colspan="7" class="text-center">No issued books found</td></tr>`;
+                return;
+            }
+
+            records.forEach(row => {
+
+                const issuedAt = row.issuedAt
+                    ? new Date(row.issuedAt).toISOString().split('T')[0]
+                    : '-';
+
+                const dueDate = row.dueDate
+                    ? new Date(row.dueDate).toISOString().split('T')[0]
+                    : '-';
+
+                let statusBadge = '';
+                let actionBtn = '';
+
+                switch (row.status) {
+                    case 'Issued':
+                        statusBadge = `<span class="badge badge-warning">Issued</span>`;
+                        actionBtn = `
+                            <button 
+                                class="btn btn-danger"
+                                onclick="returnBook(${row.id}, ${row.bookId})">
+                                Return Book
+                            </button>`;
+                        break;
+
+                    case 'Returned':
+                        statusBadge = `<span class="badge badge-success">Returned</span>`;
+                        break;
+
+                    case 'Overdue':
+                        statusBadge = `<span class="badge badge-danger">Overdue</span>`;
+                        actionBtn = `
+                            <button 
+                                class="btn btn-danger"
+                                onclick="returnBook(${row.id}, ${row.bookId})">
+                                Return Book
+                            </button>`;
+                        break;
+
+                    default:
+                        statusBadge = `<span class="badge badge-secondary">${row.status}</span>`;
+                }
+
+                html += `
+                    <tr>
+                        <td>${row.id}</td>
+                        <td>${row.user?.name || '-'}</td>
+                        <td>${row.book?.title || '-'}</td>
+                        <td>${issuedAt}</td>
+                        <td>${dueDate}</td>
+                        <td>${row?.fineAmount}</td>
+                        <td>${row?.paymentMode || '-'}</td>
+                        <td>${row?.transactionId || '-'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionBtn}</td>
+                    </tr>`;
+            });
+
+            document.getElementById('records').innerHTML = html;
+        } catch (error) {
+            // console.log(error);
+            document.getElementById('records').innerHTML =
+                `<tr><td colspan="7" class="text-danger text-center">
+                    Failed to load issued books
+                </td></tr>`;
+        }
+    }
+
+    async function issueBookHandler() {
+        if ($("#registrationForm").valid()) {
+
+            const payload = {
+                userId: categories3.value,
+                bookId: categories5.value,
+                issuedate: issuedate.value,
+                returndate: returndate.value
+            };
+
+            const res = await fetch("/issuebooks", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if(data.error) {
+                Qual.errordb(data.message, '');
+            } else {
+                fetchIssuedBooks();
+                Qual.successdb(data.message, '');
+
+                document.getElementById("categories1").innerHTML = '`<option value="">Select Course</option>`;';
+                document.getElementById("categories2").innerHTML = '`<option value="">Select Branch</option>`;';
+                document.getElementById("categories3").innerHTML = '`<option value="">Select Student</option>`;';
+                document.getElementById("categories5").innerHTML = '`<option value="">Select Book</option>`;';
+                document.getElementById("registrationForm").reset();                
+            }
+        }
+    }
+
+    let currentIssueId = null;
+    let currentBookId = null;
+
+    async function returnBook(issueId, bookId) {
+        currentIssueId = issueId;
+        currentBookId = bookId;
+
+       let response = await fetch(`/returnbook`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ issueId: issueId })
+        });
+
+        response = await response.json();
+
+        if(response.error) {
+            Qual.errordb(response?.message, '');
+        } else {
+            fetchIssuedBooks();
+
+            if(response.fineAmount > 0) {
+               document.getElementById("fineAmountText").innerText = response.fineAmount;
+               $("#fineModal").modal("show");
+            } else {
+                Qual.successdb(response?.message, '');
+            }
+        }
+    }
+
+    async function submitFine() {
+        if($("#fineForm").valid()) {
+            let paymentMode = document.getElementById("paymentMode").value;
+            let transactionId = document.getElementById("transactionId").value;
+
+            let response = await fetch("/submitFinePayment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    issueId: currentIssueId,
+                    paymentMode: paymentMode,
+                    transactionId: transactionId
+                })
+            });
+
+            response = await response.json();
+
+            if(response.error) {
+                Qual.errordb(response.message, '');
+            } else {
+                hideModal();
+                fetchIssuedBooks();
+                Qual.successdb("Fine paid successfully", '');
+            }
+        }
+    }
+
+    async function returned(id, bookId) {
+        // await fetch('/return/' + id, {
+        //     method: 'PUT',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ status: 'Returned' })
+        // });
+
+        // await changestatus2(bookId);
+        // ReadissuedData();
+    }
+
+    async function changestatus(id) {
+        await fetch('/changestatus/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'Issued' })
+        });
+    }
+
+    async function changestatus2(bookId) {
+        await fetch('/changestatus2/' + bookId, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'Available' })
+        });
+    }
+</script>
+
+</body>
+</html>

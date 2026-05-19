@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* background: linear-gradient(135deg, #fff7ed, #ffedd5); */
+             background: url(https://www.shutterstock.com/image-photo/blurred-background-chic-urban-library-600nw-2735908683.jpg) center center fixed;
+             background-repeat: no-repeat;
+             background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            max-width: 500px;
+            width: 100%;
+            /* background: linear-gradient(135deg, #fff, #fff7ed); */
+             background: rgba(0, 0, 0, 0.598);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.50);
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #ea580c;
+            /* orange tone */
+            text-align: center;
+            font-weight: 600;
+        }
+
+        label {
+            color: #eff1f3;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border-radius: 8px;
+        }
+
+        /* Button same as previous orange theme */
+        .btn-primary {
+            background-color: #f97316;
+            border: none;
+            border-radius: 999px;
+            padding: 10px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #ea580c;
+        }
+
+        .text-center a {
+            color: #080a0c;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .text-center a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2> <i class="bi bi-mortarboard" style="font-size: 50px; color: #ea580c;"></i> Student Login</h2>
+        <form>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+            </div>
+            
+
+            <button type="button" onclick="LoginNow()" class="btn btn-primary w-100">Login</button>
+
+            <div class="text-center mt-3">
+    <p class="text-light">
+        Don't have an account?
+        <a href="/user/create" class="text-warning">Create Account</a>
+    </p>
+</div>
+            <div class="text-center"><a href="/" class="text-light"><hr>Go Back   </a>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js"></script>
+
+
+
+    <script>
+        async function LoginNow() {
+            // if($("#loginForm").valid())
+            {
+                var email = document.getElementById("email").value;
+                var password = document.getElementById("password").value;
+
+                var res = await fetch("/user/login", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                res = await res.json();
+                console.log(res);
+                if (res.error) {
+                    Qual.errordb("Error", "Please create account first.");
+                } else {
+                    //after 2 sec of delay send it to sigin pg
+                    window.location.href = "/user/dashboard";
+
+
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
