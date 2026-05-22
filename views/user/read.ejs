@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Read Book</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<style>
+    .bookmark-btn{
+    background-color:#ff9800;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.bookmark-btn:hover{
+    background-color:#e68900;
+    transform:scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- <h2><%= book.title %></h2> -->
+        <button class="bookmark-btn" onclick="saveBookmark()" class="btn btn-warning">
+            📌 Save Bookmark
+        </button>
+
+
+        <iframe id="pdfViewer" width="100%" height="1000px">
+        </iframe>
+
+    </div>
+
+    <script>
+
+        async function saveBookmark() {
+            let page = prompt("Enter page number:");
+
+            await fetch("/user/bookmark", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    bookId: "<%= book.id %>",
+                    page: page
+                })
+            });
+
+            alert("Bookmark Saved ✔");
+        }
+
+        async function loadBookmark() {
+            let res = await fetch("/user/bookmark/<%= book.id %>");
+            let data = await res.json();
+
+            let page = 1;
+
+            if (data.data && data.data.page_number) {
+                page = data.data.page_number;
+            }
+
+            document.getElementById("pdfViewer").src =
+                "/bookspdf/<%= book.pdf %>#page=" + page;
+        }
+
+        // 👉 YE ADD KARNA NA BHULO
+        loadBookmark();
+
+    </script>
+
+</body>
+
+</html>

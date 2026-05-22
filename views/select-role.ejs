@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body{
+            background: url(https://t4.ftcdn.net/jpg/19/46/62/49/360_F_1946624982_lSE4SHqxFu5suc77qsBnacU2nXd8IKFu.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        header{
+            background-color: #ce682d;
+        }
+
+        #div-container{
+            background: rgba(0, 0, 0, 0.598);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.50);
+        }
+
+        
+         
+    </style>
+</head>
+
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    
+    <header class="bg-orange-600 p-4 flex justify-between items-center px-10 text-white" >
+        
+        <h1 class="text-2xl font-bold">📚 E-Library</h1>
+
+        <div class="space-x-6">
+            <a href="/" class="hover:underline">Home</a>
+            <a href="/books" class="hover:underline">Books</a>
+            <a href="/select-role" class="bg-white text-orange-600 px-4 py-1 rounded">Go to Library</a>
+        </div>
+    </header>
+
+    <!-- Main (CENTER CONTENT VERTICALLY) -->
+    <main class="flex flex-grow items-center justify-center p-8" id="div-container">
+        <div class="flex flex-col md:flex-row gap-8">
+            
+            <!-- Admin Card -->
+            <div class="bg-white shadow-xl rounded-2xl p-10 text-center hover:shadow-2xl transition duration-300 w-70">
+                <i class=" bi bi-person" style="font-size: 50px; color: #e67e22;"></i>
+                <h2 class="text-xl font-semibold mb-4">Admin</h2>
+                <p class="text-gray-600 mb-6">Manage the library system and users.</p>
+                <a href="admin/login" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600">
+                    Go to Login
+                </a>
+            </div>
+
+            <!-- Librarian Card -->
+            <div class="bg-white shadow-xl rounded-2xl p-10 text-center hover:shadow-2xl transition duration-300 w-70">
+                <i class="bi bi-journal-bookmark" style="font-size: 50px; color: #e67e22;"></i>
+                <h2 class="text-xl font-semibold mb-4">Librarian</h2>
+                <p class="text-gray-600 mb-6">Handle books and track student activities.</p>
+                <a href="/login" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600">
+                    Go to Login
+                </a>
+            </div>
+
+            <!-- Student Card -->
+            <div class="bg-white shadow-xl rounded-2xl p-10 text-center hover:shadow-2xl transition duration-300 w-70">
+                <i class="bi bi-mortarboard" style="font-size: 50px; color: #e67e22;"></i>
+                <h2 class="text-xl font-semibold mb-4">Student</h2>
+                <p class="text-gray-600 mb-6">Search for books and check borrow history.</p>
+                <a href="user/login" class="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600">
+                    Go to Login
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-200 p-4 w-full text-center text-gray-600">
+        &copy;  2026  E-Library  System
+        <br>
+        <pre><a href="https://www.google.com/"><i class="bi bi-google"></i></a> <a href="https://www.youtube.com/"><i class="bi bi-youtube"></i></a> <a href="https://www.instagram.com/?hl=en"><i class="bi bi-instagram"></i></a> <a href="https://www.facebook.com/"><i class="bi bi-facebook"></i></a></pre>
+
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AKKHOR | Add Book</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.png">
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="/css/normalize.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="/css/all.min.css">
+    <!-- Flaticon CSS -->
+    <link rel="stylesheet" href="/fonts/flaticon.css">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="/css/animate.min.css">
+    <!-- Select 2 CSS -->
+    <link rel="stylesheet" href="/css/select2.min.css">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="/css/datepicker.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css">
+    <!-- Modernize js -->
+    <script src="/js/modernizr-3.6.0.min.js"></script>
+
+
+
+    <style>
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+            font-size: 2rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: rgba(244, 243, 244, 0.93);
+            background-clip: padding-box;
+            border: 2px solid #ced4da;
+            border-radius: 0.4rem;
+        }
+        .error{
+            color: red;
+            font-size: 15px;
+        }
+
+    </style>
+</head>
+
+<body onload="ReadProductData()">
+
+<!-- Preloader Start Here -->
+<div id="preloader"></div>
+<!-- Preloader End Here -->
+
+<div id="wrapper" class="wrapper bg-ash">
+    <!-- Header Menu Area Start Here -->
+    <%- include('../partials/admin/topbar') %>
+    <!-- Header Menu Area End Here -->
+
+    <!-- Page Area Start Here -->
+    <div class="dashboard-page-one">
+        <!-- Sidebar Area Start Here -->
+        <%-include('../partials/adminsidebar')%>
+        <!-- Sidebar Area End Here -->
+
+        <div class="dashboard-content-one">
+            <!-- Breadcubs Area Start Here -->
+            <div class="breadcrumbs-area">
+            </div>
+            <!-- Breadcubs Area End Here -->
+
+            <!-- Add New Book Area Start Here -->
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>Add Book Category</h3>
+                        </div>
+                    </div>
+
+                    <form class="new-added-form" id="registrationForm">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                <label>Category Name </label>
+                                <input type="text" placeholder="" id="name" class="form-control" required>
+                            </div>
+                            <div class="col-md-3 d-none d-xl-block form-group"></div>
+                            <div class="col-12 form-group mg-t-8">
+                                <button type="button"  onclick="addnow()" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Add</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card height-auto">
+                <div class="card-body">
+                     <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>List of Category</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped  table-light table-hover mt-3">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody id="records"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <%- include('../partials/admin/footer.ejs') %>
+        </div>
+    </div>
+    <!-- Page Area End Here -->
+</div>
+
+<!-- jquery-->
+<!--<script src="/js/jquery-3.3.1.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+<!-- Plugins js -->
+<script src="/js/plugins.js"></script>
+<!-- Popper js -->
+<script src="/js/popper.min.js"></script>
+<!-- Bootstrap js -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Counterup Js -->
+<script src="/js/jquery.counterup.min.js"></script>
+<!-- Moment Js -->
+<script src="/js/moment.min.js"></script>
+<!-- Waypoints Js -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- Scroll Up Js -->
+<script src="/js/jquery.scrollUp.min.js"></script>
+<!-- Full Calender Js -->
+<script src="/js/fullcalendar.min.js"></script>
+<!-- Chart Js -->
+<script src="/js/Chart.min.js"></script>
+<!-- Custom Js -->
+<script src="/js/main.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    async function addnow()
+    {
+         if($("#registrationForm").valid())
+        {
+            var name = document.getElementById("name").value;
+
+            var res =await fetch("/admin/addbookcategory",{
+                method:'POST',
+                headers:{'Content-Type': 'application/json'},
+                body:JSON.stringify({
+                    name:name,
+                })
+            });
+            res = await res.json();
+           // console.log(res);
+            if(res.error){
+                Qual.errordb("Error", res.message);
+            }else
+            {
+                Qual.successdb("Success", res.message);
+                ReadProductData();
+
+            }
+        }
+    }
+
+    async function ReadProductData()
+    {
+        try{
+            var res =await fetch('/admin/viewcategory');
+            res = await res.json();
+            var records = res.records;
+            console.log(records);
+            var html=``;
+            for(var x of records)
+            {
+                html+=`<tr>`
+                html+=`<td>${x.id}</td>`
+                html+=`<td>${x.name}</td>`
+                html+=`<td><button type="button" class ="btn btn-danger btn-sm" onclick="Deletedata(${x.id})">Delete</button></td>`
+                html+=`</tr>`
+            }
+            document.getElementById('records').innerHTML=html;
+        }catch(e)
+        {
+            console.log(e.message);
+        }
+    }
+
+    async function Deletedata(id)
+    {
+       if(confirm('Are you sure to delete this?')) {
+         var res = await fetch('/admin/deletecategory/'+id ,{ method :'DELETE'});
+         res = await res.json();
+         ReadProductData();
+       }
+    }
+</script>
+
+</body>
+</html>

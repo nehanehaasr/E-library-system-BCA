@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #6c63ff;
+            background-image: url('https://www.transparenttextures.com/patterns/diagmonds-light.png');
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .form-text {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2> Admin Signup</h2>
+    <form>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="terms">
+            <label class="form-check-label" for="terms">I agree to the terms and conditions</label>
+        </div>
+        <button type="button" onclick="RegisterNow()" class="btn btn-primary w-100">Sign Up</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js"></script>
+
+
+<script>
+    async function RegisterNow()
+    {
+       // if($("#registrationForm").valid())
+        {
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+
+            var res =await fetch("/admin/signup",{
+                method:'POST',
+                headers:{'Content-Type': 'application/json'},
+                body:JSON.stringify({
+                    name:name,
+                    email:email,
+                    password:password
+                })
+            });
+            res = await res.json();
+            console.log(res);
+            if(res.error){
+                Qual.errordb("Error", res.message);
+            }else
+            {
+                Qual.successdb("Success", res.message);
+                //after 2 sec of delay send it to sigin pg
+                setTimeout(() => {
+                    window.location.href ="/admin/login";
+                } , 1000)  //1000=1sec, 2000=2sec
+
+            }
+        }
+    }
+</script>
+</body>
+</html>

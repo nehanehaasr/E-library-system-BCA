@@ -1,0 +1,226 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <%- include('../partials/admin/headerFiles', {title: 'AKKHOR | Home 1'}) %>
+
+    <style>
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+            font-size: 2rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: rgba(244, 243, 244, 0.93);
+            background-clip: padding-box;
+            border: 2px solid #ced4da;
+            border-radius: 0.4rem;
+        }
+
+        .error{
+            color: red;
+            font-size: 15px;
+        }
+
+    </style>
+</head>
+
+<body onload="fetchdegree()">
+
+<!-- Preloader Start Here -->
+<div id="preloader"></div>
+<!-- Preloader End Here -->
+
+<div id="wrapper" class="wrapper bg-ash">
+    <!-- Header Menu Area Start Here -->
+    <%- include('../partials/admin/topbar') %>
+    <!-- Header Menu Area End Here -->
+
+    <!-- Page Area Start Here -->
+    <div class="dashboard-page-one">
+        <%- include('../partials/adminsidebar') %>
+
+        <div class="dashboard-content-one">
+            <!-- Breadcubs Area Start Here -->
+            <div class="breadcrumbs-area">
+            </div>
+            <!-- Breadcubs Area End Here -->
+
+            <!-- Add New Book Area Start Here -->
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>Add Course</h3>
+                        </div>
+                    </div>
+
+                    <form class="new-added-form" id="registrationForm">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-6 col-12 form-group">
+                                <div >
+                                    <label for="name">Select Branch</label>
+                                    <select id="categories" class="form-select" required>
+
+                                    </select>
+                                </div>
+                                <label>Course Name</label>
+                                <input type="text" placeholder="" id="name" class="form-control" name="name" required>
+                            </div>
+
+                            <div class="col-12 form-group mg-t-8">
+                                <button type="button" onclick="add()" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Save</button>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Add New Book Area End Here -->
+
+            <div class="card height-auto">
+                <div class="card-body">
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>List of Courses</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped  table-light table-hover mt-3">
+                            <thead>
+                            <tr>
+                                <!-- <th>Id</th> -->
+                                <th>Degree Name</th>
+                                <th>Course Name</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="records"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+           <%- include('../partials/admin/footer.ejs') %>
+        </div>
+    </div>
+    <!-- Page Area End Here -->
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+<!-- jquery-->
+<!--<script src="/js/jquery-3.3.1.min.js"></script>-->
+<!-- Plugins js -->
+<script src="/js/plugins.js"></script>
+<!-- Popper js -->
+<script src="/js/popper.min.js"></script>
+<!-- Bootstrap js -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Counterup Js -->
+<script src="/js/jquery.counterup.min.js"></script>
+<!-- Moment Js -->
+<script src="/js/moment.min.js"></script>
+<!-- Waypoints Js -->
+<script src="/js/jquery.waypoints.min.js"></script>
+<!-- Scroll Up Js -->
+<script src="/js/jquery.scrollUp.min.js"></script>
+<!-- Full Calender Js -->
+<script src="/js/fullcalendar.min.js"></script>
+<!-- Chart Js -->
+<script src="/js/Chart.min.js"></script>
+<!-- Custom Js -->
+<script src="/js/main.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    async function fetchdegree(){
+        var res = await fetch('/admin/fetchdegree');
+        res = await res.json();
+        var records = res.records;
+        // console.log(records);
+        var html =`<option value="">Select category</option>`
+        for( var x of records)
+        {
+            html+=`<option value="${x.id}">${x.name}</option>`
+        }
+        document.getElementById("categories").innerHTML=html;
+        viewsubcategory()
+    }
+
+    async function add()
+    {
+        if($("#registrationForm").valid())
+        {
+            const name = document.getElementById("name").value;
+            const degreeId = document.getElementById("categories").value;
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('degreeId', degreeId);
+
+            let res = await fetch("/admin/addcourse",{
+                method:"POST",
+                body:formData
+            });
+
+            res = await res.json();
+
+            if(res.error){
+                Qual.errordb("Error", res.message);
+            } else {
+                viewsubcategory();
+                Qual.successdb("Added Successfully", res?.message);
+                document.getElementById("registrationForm").reset();
+            }
+        }
+    }
+    
+    async function viewsubcategory()
+    {
+        try{
+
+            var res =await fetch('/admin/viewcourse');
+            res = await res.json();
+            var records = res.records;
+            var html=``;
+            //console.log(records);
+            for(var x of records)
+            {
+                html+=`<tr>`
+                //html+=`<td>${x.id}</td>`
+                html+=`<td>${x.degree.name}</td>`
+                html+=`<td>${x.name}</td>`
+                html+=`<td><button type="button" class ="btn btn-danger btn-sm" onclick="Deletedata(${x.id})">Delete</button></td>`
+                html+=`</tr>`
+            }
+            document.getElementById('records').innerHTML=html;
+        }catch(e)
+        {
+            console.log(e.message);
+        }
+    }
+
+    async function Deletedata(id)
+    {
+        if(confirm('Are you sure to delete this?')) {
+            var res = await fetch('/admin/deletecourse/'+id ,{ method :'DELETE'});
+            res = await res.json();
+            viewsubcategory();
+        }
+    }
+
+</script>
+
+
+</body>
+
+</html>

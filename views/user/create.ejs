@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url(https://www.shutterstock.com/image-photo/blurred-background-chic-urban-library-600nw-2735908683.jpg) center center fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+
+        }
+
+        .form-container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.598);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.50);
+        }
+
+
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #ea580c;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        label {
+            color: #eff1f3;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: #f97316;
+            border: none;
+            border-radius: 999px;
+            padding: 10px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #ea580c;
+        }
+    </style>
+</head>
+
+<body onload="fetchdegree()">
+
+    <div class="form-container">
+
+        <h2>
+            <i class="bi bi-mortarboard" style="font-size: 50px; color: #ea580c;"></i>
+            Create Account
+        </h2>
+
+        <form>
+
+
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+            </div>
+
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mobile Number</label>
+                <input type="tel" class="form-control" id="mobile" placeholder="Enter mobile number" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+
+                <textarea class="form-control" id="address" placeholder="Enter your address"></textarea>
+            </div>
+
+
+            <div class="mb-3">
+                        <label class="form-label">Gender</label>
+
+                        <select class="form-control" id="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+           
+
+            <!-- BRANCH -->
+            
+
+            <div class="row">
+                
+
+                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                    <div class="mb-3">
+                        <label class="form-label">Pin Code</label>
+
+                        <input type="number" class="form-control" id="zip" placeholder="Enter zip code" required>
+                    </div>
+
+                </div>
+
+                <div class="col-xl-4 col-lg-6 col-12 form-group">
+
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+
+                        <input type="text" class="form-control" id="city" placeholder="Enter city" required>
+                    </div>
+                </div>
+
+                 <div class="col-xl-4 col-lg-6 col-12 form-group">
+                    <div class="mb-3">
+                        <label class="form-label">State</label>
+
+                        <input type="text" class="form-control" id="state" placeholder="Enter state" required>
+                    </div>
+                 </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                    <div class="mb-3">
+                <label class="form-label">Select Degree</label>
+
+                <select class="form-control" id="degree" onchange="fetchcourserbyid(this.value)" required>
+
+                    <option value="">Select Degree</option>
+
+                </select>
+            </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                    <div class="mb-3">
+                <label class="form-label">Select Course</label>
+
+                <select class="form-control" id="course" onchange="fetchBranch(this.value)" required>
+
+                    <option value="">Select Course</option>
+
+                </select>
+               </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-6 col-12 form-group">
+                    <div class="mb-3">
+                <label class="form-label">Select Branch</label>
+
+                <select class="form-control" id="branch" required>
+
+                    <option value="">Select Branch</option>
+
+                </select>
+            </div>
+                </div>
+
+            </div>
+
+
+            
+
+            <!-- BUTTON -->
+            <button type="button" onclick="CreateAccount()" class="btn btn-primary w-100">
+
+                Create Account
+
+            </button>
+
+            <!-- LOGIN LINK -->
+            <div class="text-center mt-3">
+
+                <p class="text-light">
+
+                    Already have an account ?
+
+                    <a href="/user/login" class="text-warning">
+                        Login
+                    </a>
+
+                </p>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js"></script>
+
+    <script>
+
+        async function CreateAccount() {
+            var namw = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var gender = document.getElementById("gender").value;
+
+            var mobile = document.getElementById("mobile").value;
+            var address= document.getElementById("address").value;
+            var city = document.getElementById("city").value;
+            var state = document.getElementById("state").value;
+            var zip = document.getElementById("zip").value;
+            var degree = document.getElementById("degree").value;
+            var course = document.getElementById("course").value;
+            
+            var branch = document.getElementById("branch").value;
+            var res = await fetch("/admin/create", {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value,
+    gender: document.getElementById("gender").value,
+
+    mobile: document.getElementById("mobile").value,
+    address: document.getElementById("address").value,
+    city: document.getElementById("city").value,
+    state: document.getElementById("state").value,
+    zip: document.getElementById("zip").value,
+
+    degree: document.getElementById("degree").value,
+    course: document.getElementById("course").value,
+    branchId: document.getElementById("branch").value
+
+})
+
+            });
+
+            res = await res.json();
+
+            console.log(res);
+
+            if (res.error) {
+
+                Qual.errordb("Error", res.message);
+
+            } else {
+
+                Qual.successdb("Success", "Account Created Successfully");
+
+                setTimeout(() => {
+
+                    window.location.href = "/user/login";
+
+                }, 2000);
+
+            }
+
+        }
+
+        async function fetchdegree() {
+
+            var res = await fetch('/admin/fetchdegree');
+            res = await res.json();
+
+            var records = res.records;
+
+            var html = `<option value="">Select Degree</option>`;
+
+            for (var x of records) {
+
+                html += `<option value="${x.id}">${x.name}</option>`;
+            }
+
+            document.getElementById("degree").innerHTML = html;
+        }
+
+
+        async function fetchcourserbyid(degreeId) {
+
+            var res = await fetch('/admin/fetchcoursebyid/' + degreeId);
+            res = await res.json();
+
+            var records = res.records;
+
+            var html = `<option value="">Select Course</option>`;
+
+            for (var x of records) {
+
+                html += `<option value="${x.id}">${x.name}</option>`;
+            }
+
+            document.getElementById("course").innerHTML = html;
+        }
+
+
+        async function fetchBranch(courseId) {
+
+            var res = await fetch('/admin/fetchbranchbyid/' + courseId);
+            res = await res.json();
+
+            var records = res.records;
+
+            var html = `<option value="">Select Branch</option>`;
+
+            for (var x of records) {
+
+                html += `<option value="${x.id}">${x.name}</option>`;
+            }
+
+            document.getElementById("branch").innerHTML = html;
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,223 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <%- include('../partials/student/headerFiles', {
+        title: 'AKKHOR | Student Dashboard'
+    }) %>
+
+    <style>
+        .table td,
+        .table th {
+            vertical-align: middle;
+        }
+
+        thead {
+            font-size: 14px !important;
+        }
+
+        tbody {
+            font-size: 12px !important;
+        }
+
+        tbody tr td img {
+            width: 50px;
+            height: 70px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Preloader Start Here -->
+<div id="preloader"></div>
+<!-- Preloader End Here -->
+
+<div id="wrapper" class="wrapper bg-ash">
+    <!-- Header Menu Area Start Here -->
+    <%- include('../partials/student/topHeader') %>
+    <!-- Header Menu Area End Here -->
+
+    <!-- Page Area Start Here -->
+    <div class="dashboard-page-one">
+        <!-- Sidebar Area Start Here -->
+        <%- include('../partials/student/sideBar') %>
+        <!-- Sidebar Area End Here -->
+
+        <div class="dashboard-content-one">
+            <!-- Breadcubs Area Start Here -->
+            <div class="breadcrumbs-area"></div>
+            <!-- Breadcubs Area End Here -->
+
+            <!-- Counts -->
+            <div class="row gutters-20">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="dashboard-summery-one mg-b-20">
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="item-icon bg-light-green">
+                                    <i class="flaticon-books text-green"></i>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="item-content">
+                                    <div class="item-title text-warning">Books Issued</div>
+                                    <div class="item-number" id="BooksIssued"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="dashboard-summery-one mg-b-20">
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="item-icon bg-light-green">
+                                    <i class="flaticon-books text-green"></i>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="item-content">
+                                    <div class="item-title text-danger">Books Overdue</div>
+                                    <div class="item-number" id="BooksOverdue"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="dashboard-summery-one mg-b-20">
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="item-icon bg-light-green">
+                                    <i class="flaticon-books text-green"></i>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="item-content">
+                                    <div class="item-title text-success">Books Returned</div>
+                                    <div class="item-number" id="BooksReturned"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card height-auto">
+                <div class="card-body">
+
+                    <div class="heading-layout1">
+                        <div class="item-title">
+                            <h3>Books</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-light table-hover mt-3 mb-0 align-middle">
+                            <thead>
+                            <tr>
+                                <th>Book Name</th>
+                                <th>Issued Date</th>
+                                <th>Return Date</th>
+                                <th>Fine Amount</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody id="records"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="row gutters-20">
+                <div class="col-12 col-xl-6 col-4-xxxl">
+                    <div class="card dashboard-card-four pd-b-20">
+                        <div class="card-body">
+                            <div class="heading-layout1">
+                                <div class="item-title">
+                                    <h3>Calender</h3>
+                                </div>
+                            </div>
+
+                            <div class="calender-wrap">
+                                <div id="fc-calender" class="fc-calender"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include('../partials/admin/footer') %>
+        </div>
+    </div>
+    <!-- Page Area End Here -->
+</div>
+
+<%- include('../partials/student/footerScripts') %>
+
+<script>
+    $(document).ready(() => {
+        fetchBooksData();
+        dashboardCounts();
+    });
+    
+    async function fetchBooksData() {
+        try {
+            let res = await fetch('/user/userbook');
+            res = await res.json();
+
+            if(res.error && res.message === "ERROR") {
+                window.location.href = "/user/login";
+                return false;
+            }
+
+            const records = res.records;
+
+            let html = ``;
+
+            for(let x of records) {
+                html += `<tr>`
+                    html += `<td style="font-weight: bold">${x.book.title}</td>`
+                    html += `<td>${x.issuedAt}</td>`
+                    html += `<td>${x.dueDate}</td>`
+                    html += `<td>${x.fineAmount}</td>`
+                    html += `<td style="letter-spacing: 0.6px; font-weight: bold; color:${x.status === 'Issued' ? 'orange' : 'red'}">${x.status}</td>`;
+                    html += `</tr>`
+            }
+
+            document.getElementById('records').innerHTML = html;
+        } catch(e) {
+            console.log(e.message);
+        }
+    }
+
+    async function dashboardCounts() {
+        try {
+            let res = await fetch('/user/dashboard-counts');
+            res = await res.json();
+
+            console.log(res);
+
+            if(res.error) {
+                document.getElementById("BooksIssued").innerHTML = 0;
+                document.getElementById("BooksOverdue").innerHTML = 0;
+                document.getElementById("BooksReturned").innerHTML = 0;
+            } else {
+                document.getElementById("BooksIssued").innerHTML = res?.data?.issuedBooks;
+                document.getElementById("BooksOverdue").innerHTML = res?.data?.overdueBooks;
+                document.getElementById("BooksReturned").innerHTML = res?.data?.returnedBooks;
+            }
+        } catch(e) {
+            console.log(e.message);
+        }
+    }
+</script>
+
+</body>
+
+</html>
