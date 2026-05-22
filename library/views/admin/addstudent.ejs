@@ -1,0 +1,332 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <%- include('../partials/admin/headerFiles', {title: 'AKKHOR | Home 1' }) %>
+
+
+        <style>
+            .form-select {
+                display: block;
+                width: 100%;
+                padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+                font-size: 2rem;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #212529;
+                background-color: rgba(244, 243, 244, 0.93);
+                background-clip: padding-box;
+                border: 2px solid #ced4da;
+                border-radius: 0.4rem;
+            }
+
+            .error {
+                color: red;
+                font-size: 15px;
+            }
+
+            .img {
+                width: 45px;
+                border-radius: 20px;
+            }
+
+            thead {
+              font-size: 14px !important;  
+            }
+
+            tbody {
+                font-size: 12px !important;
+            }
+        </style>
+
+</head>
+
+<body onload="fetchdegree()">
+
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+        <%- include('../partials/admin/topbar') %>
+            <!-- Header Menu Area End Here -->
+
+            <!-- Page Area Start Here -->
+            <div class="dashboard-page-one">
+                <%- include('../partials/adminsidebar')%>
+
+                    <!-- Sidebar Area End Here -->
+                    <div class="dashboard-content-one">
+                        <!-- Breadcubs Area Start Here -->
+                        <div class="breadcrumbs-area">
+                        </div>
+                        <!-- Breadcubs Area End Here -->
+
+                        <div class="card height-auto">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Add New Student</h3>
+                                    </div>
+                                </div>
+
+                                <form class="new-added-form" id="form">
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <div>
+                                                <label for="name" class="form-label">Select Degree-Type</label>
+                                                <select onchange="fetchcourserbyid(this.value)" id="categories"
+                                                    name="degree" class="form-control" required></select>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="name">Select Course</label>
+                                            <select onchange="fetchbranchbyid(this.value)" id="categories1"
+                                                name="course" class="form-control" required>
+
+                                            </select>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="name">Select Branch</label>
+                                            <select id="categories2" class="form-control" name="branch"required></select>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="name"
+                                                placeholder="Enter your name" required>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email"
+                                                placeholder="Enter your email" required>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="gender" class="form-label">Gender</label>
+                                            <!-- <input type="text" class="form-control" id="gender" name="gender"
+                                                placeholder="Enter your gender" required> -->
+
+                                            <select id="gender" class="form-control" name="gender"required>
+                                                <option value="">Please Select Gender</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="mobile" class="form-label">Mobile</label>
+                                            <input type="tel" class="form-control" id="mobile" name="mobile"
+                                                placeholder="Enter your number" required>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="address" class="form-label">Address</label>
+                                            <input type="text" class="form-control" id="address" name="address"
+                                                placeholder="Enter your address" required>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="city" class="form-label">City</label>
+                                            <input type="text" class="form-control" id="city" name="city"
+                                                placeholder="Enter your city" required>
+                                        </div>
+
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="state" class="form-label">State</label>
+                                            <input type="text" class="form-control" id="state" name="state"
+                                                placeholder="Enter your state" required>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="zip" class="form-label">Pin code</label>
+                                            <input type="number" class="form-control" id="zip" name="zip"
+                                                placeholder="Enter your zip" required maxlength="6" minlength="6">
+                                        </div>
+                                        <div class="col-xl-4 col-lg-6 col-12 form-group">
+                                            <label for="photo">Photo</label>
+                                            <input type="file" id="photo" name="photo" class="form-control pt-3" required>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="RegisterNow()" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Register
+                                        student</button>
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card height-auto">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>List of Student</h3>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped  table-light table-hover mt-3 mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Branch</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Gender</th>
+                                                <th>Mobile</th>
+                                                <th>Address</th>
+                                                <th>City</th>
+                                                <th>State</th>
+                                                <th>Zip</th>
+                                                <th>Photo</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="records"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <%- include('../partials/admin/footer.ejs') %>
+                    </div>
+            </div>
+    </div>
+
+
+    <%- include('../partials/admin/footerScripts.ejs') %>
+
+        <script>
+            async function fetchdegree() {
+
+                ReaduserData()
+                var res = await fetch('/admin/fetchdegree');
+                res = await res.json();
+                var records = res.records;
+                // console.log(records);
+                var html = `<option value="">Select category</option>`
+                for (var x of records) {
+                    html += `<option value="${x.id}">${x.name}</option>`
+                    // fetchcourserbyid()
+                }
+                document.getElementById("categories").innerHTML = html;
+                //console.log(document.getElementById('categories').value);
+
+            }
+
+            async function fetchcourserbyid(degreeId) {
+                // console.log(degreeId)
+                // var id = document.getElementById('categories').value;
+                var res = await fetch('/admin/fetchcoursebyid/' + degreeId);
+                res = await res.json();
+                var records = res.records;
+                //console.log(records);
+                var html = `<option value="">Select category</option>`
+                for (var x of records) {
+                    html += `<option value="${x.id}">${x.name}</option>`
+                }
+                document.getElementById("categories1").innerHTML = html;
+
+            }
+
+            async function fetchbranchbyid(branchId) {
+
+                // console.log(branchId)
+                var res = await fetch('/admin/fetchbranchbyid/' + branchId);
+                res = await res.json();
+                var records = res.records;
+                console.log(records);
+                var html = `<option value="">Select category</option>`
+                for (var x of records) {
+                    html += `<option value="${x.id}">${x.name}</option>`
+                }
+                document.getElementById("categories2").innerHTML = html;
+
+            }
+
+            async function RegisterNow() {
+                let length = 8
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let pass = '';
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * chars.length);
+                    pass += chars[randomIndex];
+                }
+
+                if ($("#form").valid()) {
+                    var password = pass;
+                    var name = document.getElementById("name").value;
+                    var email = document.getElementById("email").value;
+                    var mobile = document.getElementById("mobile").value;
+                    var gender = document.getElementById("gender").value;
+                    var address = document.getElementById("address").value;
+                    var city = document.getElementById("city").value;
+                    var state = document.getElementById("state").value;
+                    var zip = document.getElementById("zip").value;
+                    var branchId = document.getElementById("categories2").value;
+                    var photo = document.getElementById("photo").files[0];
+
+                    var formData = new FormData();
+                    formData.append('name', name)
+                    formData.append('email', email)
+                    formData.append('password', password)
+                    formData.append('mobile', mobile)
+                    formData.append('gender', gender)
+                    formData.append('address', address)
+                    formData.append('city', city)
+                    formData.append('state', state)
+                    formData.append('zip', zip)
+                    formData.append('branchId', branchId)
+                    formData.append('photo', photo)
+
+                    let res = await fetch("/admin/signupuser", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    res = await res.json();
+
+                    console.log(res);
+                    if (res.error) {
+                        Qual.errordb("Error", res.message);
+                    } else {
+                        ReaduserData();
+                        sendEmail(email, password, name);
+                        Qual.successdb("Success", res.message);
+                        document.getElementById("form").reset();
+                    }
+                }
+            }
+
+            async function ReaduserData() {
+                try {
+                    let res = await fetch('/admin/viewuserdata');
+                    res = await res.json();
+                    var records = res.records;
+                    var html = ``;
+                    for (var x of records) {
+                        html += `<tr>`
+                        html += `<td>${x.branch.name}</td>`
+                        html += `<td>${x.name}</td>`
+                        html += `<td>${x.email}</td>`
+                        html += `<td>${x.gender}</td>`
+                        html += `<td>${x.mobile}</td>`
+                        html += `<td>${x.address}</td>`
+                        html += `<td>${x.city}</td>`
+                        html += `<td>${x.state}</td>`
+                        html += `<td>${x.zip}</td>`
+                        html += `<td><img src="${x.photo}" class="img"></td>`
+                        html += `<td>${x.status}</td>`
+                        html += `</tr>`
+                    }
+                    document.getElementById('records').innerHTML = html;
+                } catch (e) {
+                    console.log(e.message);
+                }
+            }
+        </script>
+</body>
+
+</html>

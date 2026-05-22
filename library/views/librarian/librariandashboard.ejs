@@ -1,0 +1,191 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <%- include('../partials/librarian/headerFiles', {
+        title: 'AKKHOR | Librarian Dashboard'
+    }) %>
+</head>
+
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <div id="wrapper" class="wrapper bg-ash">
+
+        <!-- Header -->
+        <%- include('../partials/librarian/topHeader') %>
+
+        <div class="dashboard-page-one">
+
+            <!-- Sidebar -->
+            <%- include('../partials/librarian/sidebar') %>
+
+            <!-- Content -->
+            <div class="dashboard-content-one">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumbs-area"></div>
+
+                <!-- Stats Cards -->
+                <div class="row gutters-20">
+
+                    <!-- Students -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="dashboard-summery-one mg-b-20">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <div class="item-icon bg-light-green">
+                                        <i class="flaticon-classmates text-green"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="item-content">
+                                        <div class="item-title">Students</div>
+                                        <div class="item-number" id="student">
+                                            <span class="spinner-border spinner-border-sm text-success"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Books -->
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="dashboard-summery-one mg-b-20">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <div class="item-icon bg-light-yellow">
+                                        <i class="flaticon-books text-orange"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="item-content">
+                                        <div class="item-title">Books</div>
+                                        <div class="item-number" id="books">
+                                            <span class="spinner-border spinner-border-sm text-warning"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Action Cards -->
+                <div class="row gutters-20 mt-4">
+
+                    <!-- Add Book -->
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <a href="/addbook" class="text-decoration-none">
+                            <div class="dashboard-summery-one mg-b-20">
+                                <div class="row align-items-center">
+                                    <div class="col-6">
+                                        <div class="item-icon bg-light-blue">
+                                            <i class="flaticon-books text-info"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="item-content">
+                                            <div class="item-title">Add Book</div>
+                                            <div class="item-number">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Issue Book -->
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <a href="/issuebooks" class="text-decoration-none">
+                            <div class="dashboard-summery-one mg-b-20">
+                                <div class="row align-items-center">
+                                    <div class="col-6">
+                                        <div class="item-icon bg-light-blue">
+                                            <i class="flaticon-books text-danger"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="item-content">
+                                            <div class="item-title">Issue Book</div>
+                                            <div class="item-number">→</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Calendar -->
+                <div class="row gutters-20">
+                    <div class="col-12 col-xl-6 col-4-xxxl">
+                        <div class="card dashboard-card-four pd-b-20">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Calendar</h3>
+                                    </div>
+                                </div>
+
+                                <div class="calender-wrap">
+                                    <div id="fc-calender" class="fc-calender"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <%- include('../partials/admin/footer') %>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <%- include('../partials/librarian/footerScripts') %>
+
+    <script>
+        function animateCount(el, value) {
+            let start = 0;
+            let duration = 600;
+            let step = Math.max(1, Math.floor(duration / value));
+
+            const timer = setInterval(() => {
+                start++;
+                el.innerText = start;
+                if (start >= value) clearInterval(timer);
+            }, step);
+        }
+
+        async function FetchStats() {
+            try {
+                const studentEl = document.getElementById('student');
+                const bookEl = document.getElementById('books');
+
+                let students = await fetch('/admin/viewuserdata').then(r => r.json());
+                let books = await fetch('/user/viewbooks/').then(r => r.json());
+
+                animateCount(studentEl, students.records.length);
+                animateCount(bookEl, books.records.length);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('student').innerText = '—';
+                document.getElementById('books').innerText = '—';
+            }
+        }
+
+        $(document).ready(function () {
+            FetchStats();
+        });
+    </script>
+
+</body>
+</html>

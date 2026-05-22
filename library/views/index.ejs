@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Library</title>
+
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+
+            background: linear-gradient(to right, #f8fafc, #e2e8f0);
+
+
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-orange-600 p-4 flex justify-between items-center px-10 text-white">
+
+        <h1 class="text-2xl font-bold">📚 E-Library system</h1>
+
+        <div class="space-x-6">
+            <a href="/" class="hover:underline">Home</a>
+            <a href="/books" class="hover:underline">Books</a>
+            <a href="/select-role" class="bg-white text-orange-600 px-4 py-1 rounded">Go to Library</a>
+        </div>
+    </header>
+
+    <!-- Search -->
+    <div class="flex justify-center mt-6">
+        <form action="/search" method="GET" class="flex w-1/2">
+            <input type="text" name="query" placeholder="Search books..."
+                class="w-full p-3 rounded-l-lg outline-none shadow">
+            <button class="bg-orange-500 px-6 text-white rounded-r-lg hover:bg-orange-600">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Categories -->
+    <div class="text-center mt-8">
+        <h2 class="text-gray-800 text-2xl mb-4 font-bold">Categories</h2>
+
+        <div id="categoryBox" class="flex justify-center gap-4 flex-wrap" data-aos="fade-up">
+            <!-- categories will load here -->
+            <a href="/category/Science"
+                class="px-5 py-2 border border-white text-white rounded-full hover:bg-orange-500 transition">Science</a>
+            <a href="/category/Novel"
+                class="px-5 py-2 border border-white text-white rounded-full hover:bg-orange-500 transition">Novel</a>
+            <a href="/category/History"
+                class="px-5 py-2 border border-white text-white rounded-full hover:bg-orange-500 transition">History</a>
+            <a href="/category/Technology"
+                class="px-5 py-2 border border-white text-white rounded-full hover:bg-orange-500 transition">Technology</a>
+        </div>
+    </div>
+
+
+
+    <!-- Hero Section -->
+    <main class="flex flex-grow items-center justify-center mt-10">
+        <div class="bg-white bg-opacity-90 p-10 rounded-2xl shadow-2xl text-center max-w-xl">
+
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                Welcome to E-Library 📚
+            </h1>
+
+            <p class="text-gray-600 mb-6">
+                Read books online anytime. Explore categories and discover new knowledge.
+            </p>
+
+            <a href="user/login"
+                class="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition">
+                Get Started
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Latest Books -->
+    <div class="px-10 mt-10 mb-10">
+        <h2 class="text-gray-800 text-2xl mb-6 text-center font-bold">
+            Latest Books</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+            <% if (books && books.length> 0) { %>
+
+                <% books.forEach(book=> { %>
+
+                    <div class="bg-white p-4 rounded-xl shadow-lg hover:scale-105 transition">
+
+                        <img src="<%= book.photo %>" class="w-full h-40 object-cover rounde">
+
+                        <h3 class="mt-2 font-bold">
+                            <%= book.title %>
+                        </h3>
+                        <p class="text-sm text-gray-600">
+                            <%= book.author %>
+                        </p>
+
+                        <p class="text-green-600 font-bold">
+    ₹<%= book.price %>
+</p>
+
+                        
+
+                        <% if (parseFloat(book.price)===0) { %>
+
+                            <!-- FREE BOOK -->
+                            <a href="/download/<%= book.id %>"
+                                class="block mt-2 bg-green-500 text-white text-center py-2 rounded hover:bg-green-600">
+                                 Free
+                            </a>
+                            <!-- <a href="/download/<%= book.id %>"
+       class="block mt-2 bg-green-500 text-white text-center py-2 rounded hover:bg-green-600">
+        📥 Download Free
+    </a> -->
+
+                            <% } else { %>
+
+                                <!-- PAID BOOK -->
+                                <a href="/buy/<%= book.id %>"
+        class="block mt-2 bg-orange-500 text-white text-center py-2 rounded hover:bg-red-600 w-full">
+        Paid
+                                </a>
+                               
+                                <% } %>
+
+                    </div>
+
+                    <% }) %>
+
+                        <% } else { %>
+                            <p class="text-white text-center">No books available</p>
+                            <% } %>
+
+        </div>
+    </div>
+
+    
+
+    <footer class="bg-orange-600 text-white mt-10">
+
+    <div class="max-w-6xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- About -->
+        <div>
+            <h2 class="text-xl font-bold mb-3">📚 E-Library System</h2>
+            <p class="text-orange-100 text-sm leading-6">
+                Read books online anytime, anywhere. Explore free and paid books and grow your knowledge.
+            </p>
+        </div>
+
+        <!-- Links -->
+        <div>
+            <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
+            <ul class="space-y-2 text-orange-100 text-sm">
+                <li><a href="/" class="hover:text-white">Home</a></li>
+                <li><a href="/books" class="hover:text-white">Books</a></li>
+                <li><a href="/select-role" class="hover:text-white">Library</a></li>
+                <li><a href="/search" class="hover:text-white">Search</a></li>
+            </ul>
+        </div>
+
+        <!-- Social -->
+        <div>
+            <h3 class="text-lg font-semibold mb-3">Follow Us</h3>
+
+            <div class="flex space-x-5 text-xl">
+
+                <a href="https://www.facebook.com/" class="hover:scale-110 transition">
+                    <i class="bi bi-facebook"></i>
+                </a>
+
+                <a href="https://www.instagram.com/" class="hover:scale-110 transition">
+                    <i class="bi bi-instagram"></i>
+                </a>
+
+                <a href="https://www.youtube.com/" class="hover:scale-110 transition">
+                    <i class="bi bi-youtube"></i>
+                </a>
+
+                <a href="https://www.google.com/" class="hover:scale-110 transition">
+                    <i class="bi bi-google"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bottom -->
+    <div class="border-t border-orange-400 text-center py-4 text-orange-100 text-sm">
+        © 2026 <span class="font-semibold text-white">E-Library System</span> | All Rights Reserved
+    </div>
+
+</footer>
+
+
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+
+    <script>
+        async function loadCategories() {
+            let res = await fetch('/fetchcategory');
+            res = await res.json();
+
+            let data = res.records;
+
+            let html = "";
+
+            data.forEach(cat => {
+                html += `
+            <a href="/category/${cat.id}"
+               class="px-5 py-2 bg-white border rounded-full hover:bg-orange-500 hover:text-white transition">
+                ${cat.name}
+            </a>
+        `;
+            });
+
+            document.getElementById("categoryBox").innerHTML = html;
+        }
+
+        loadCategories();
+
+        async function orderNow() {
+                try {
+
+                    if (!selectedBookId) {
+                        alert("Book not selected!");
+                        return;
+                    }
+
+                    console.log("FINAL BOOK ID:", selectedBookId); // 🔥 DEBUG
+
+                    const title = document.getElementById('modalBookName').innerText;
+                    const price = document.getElementById('modalBookPrice').innerText;
+
+                    let res = await fetch("/user/send-email", {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            title: title,
+                            price: price,
+                            bookId: selectedBookId
+                        })
+                    });
+
+                    let data = await res.text();
+                    console.log("RAW RESPONSE:", data);
+
+                    try {
+                        data = JSON.parse(data);
+                        if (!data.error) {
+                            alert("Book Purchased Successfully ✔");
+
+                            // modal close
+                            let modal = bootstrap.Modal.getInstance(document.getElementById('buyModal'));
+                            modal.hide();
+
+                            // reload books (important)
+                            viewsubcategory(document.getElementById('categories').value);
+                        }
+                    } catch (e) {
+                        alert("Server error (not JSON)");
+                        return;
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+
+
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,300 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <%- include('../partials/student/headerFiles', { title: 'AKKHOR | Available Books' }) %>
+
+        <style>
+            .table td,
+            .table th {
+                vertical-align: middle;
+            }
+
+            thead {
+                font-size: 14px !important;
+            }
+
+            tbody {
+                font-size: 12px !important;
+            }
+
+            tbody tr td img {
+                width: 50px;
+                height: 70px;
+            }
+
+            /* Extra small devices (phones, 600px and down) */
+            @media only screen and (max-width: 600px) {
+                .dynamic-height {
+                    height: 100vh;
+                }
+            }
+
+            /* Small devices (portrait tablets and large phones, 600px and up) */
+            @media only screen and (min-width: 600px) {
+                .dynamic-height {
+                    height: 100vh;
+                }
+            }
+        </style>
+</head>
+
+<body onload="fetchcategories()">
+
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+
+    <div id="wrapper" class="wrapper bg-ash">
+
+        <%- include('../partials/student/topHeader') %>
+
+
+            <div class="dashboard-page-one">
+
+                <%- include('../partials/student/sideBar') %>
+
+                    <div class="dashboard-content-one dynamic-height">
+                        <!-- Breadcubs Area Start Here -->
+                        <div class="breadcrumbs-area"></div>
+                        <!-- Breadcubs Area End Here -->
+
+                        <div class="card height-auto">
+                            <div class="card-body">
+                                <div class="heading-layout1">
+                                    <div class="item-title">
+                                        <h3>Available Books</h3>
+                                    </div>
+                                </div>
+
+                                <form class="new-added-form">
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-6 col-12">
+                                            <label for="name">Books Category:</label>
+                                            <select id="categories" onchange="viewsubcategory(this.value)"
+                                                class="form-select"></select>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-light table-hover align-middle mt-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Category Name</th>
+                                                <th>Title</th>
+                                                <th>Author</th>
+                                                <th>Photo</th>
+                                                <!-- <th>View PDF</th> -->
+                                                <th>Buy / Read</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="records"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="buyModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Buy Book</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <h4 id="modalBookName"></h4>
+                                        <p>Price: ₹<span id="modalBookPrice"></span></p>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button id="payNowBtn" class="btn btn-primary" onclick="orderNow()">Proceed to
+                                            Pay</>
+                                            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <%- include('../partials/admin/footer') %>
+                    </div>
+            </div>
+            <!-- Page Area End Here -->
+    </div>
+
+    <%- include('../partials/student/footerScripts') %>
+
+        <script>
+            async function fetchcategories() {
+                console.log("ALL COOKIES:", document.cookie);
+                var res = await fetch('/fetchcategory');
+                res = await res.json();
+                var records = res.records;
+                // console.log(records);
+                var html = `<option value="">Select Category</option>`
+                for (var x of records) {
+                    html += `<option value="${x.id}">${x.name}</option>`
+                }
+                document.getElementById("categories").innerHTML = html;
+            }
+
+
+
+
+            async function viewsubcategory(id) {
+                try {
+                    if (!id) {
+                        Qual.errordb('Please Select Book Category');
+                        return false;
+                    }
+
+                    let res = await fetch('/user/viewallbooks/' + id);
+                    res = await res.json();
+
+                    const records = res.records;
+
+                    if (records.length === 0) {
+                        document.getElementById('records').innerHTML = "<tr><td colspan='6' class='text-danger text-center'>No Data Found</td></tr>";
+                        return false;
+                    }
+
+                    let html = ``;
+
+                    for (var x of records) {
+                        html += `<tr>`
+                        html += `<td>${x.id}</td>`
+                        html += `<td>${x.category.name}</td>`
+                        html += `<td>${x.title}</td>`
+                        html += `<td>${x.author}</td>`
+                        html += `<td><img src="${x.photo}" alt=""></td>`
+                        // html += `<td> <a href="${x.pdf}" class=" btn btn-success" style=" padding: 10px; margin-left:43px; width:100px; ">View </a>  </td>`
+                        // html+=`<td>    <a href="/bookspdf/${x.pdf}" class=" btn btn-success " style=" padding: 10px; margin-left:43px; width:100px; height:37px"  download >Downloaad </a>  </td>`
+                        if (x.price > 0) {
+
+                            if (x.isPurchased) {
+
+                                html += `<td>
+            <a href="/user/read/${x.id}" class="btn btn-success"  style=" padding: 10px; margin-left:43px; width:100px;">
+                📖 Read Book
+            </a>
+        </td>`;
+
+                            } else {
+
+                                html += `<td>
+            <button onclick="buyBook(${x.id}, ${x.price}, decodeURIComponent('${encodeURIComponent(x.title)}'))" style=" padding: 10px; margin-left:43px; width:100px;"
+            class="btn btn-warning">
+                Buy Now
+            </button>
+        </td>`;
+                            }
+
+                        } else {
+
+                            html += `<td>
+        <a href="/bookspdf/${x.pdf}" class="btn btn-success" download  style=" padding: 10px; margin-left:43px; width:100px;">
+            Download
+        </a>
+    </td>`;
+                        }
+
+                        html += `<td>${x.status}</td>`
+                        html += `</tr>`
+                        console.log(x.pdf);
+
+                    }
+
+
+
+                    document.getElementById('records').innerHTML = html;
+                } catch (e) {
+                    console.log(e.message);
+                }
+            }
+
+
+
+            let selectedBookId = null;
+            async function buyBook(bookId, price, title) {
+                console.log("Selected Book ID:", bookId);
+                selectedBookId = bookId;
+                // modal me data set
+                document.getElementById('modalBookName').innerText = title;
+                document.getElementById('modalBookPrice').innerText = price;
+
+               
+                var myModal = new bootstrap.Modal(document.getElementById('buyModal'));
+                myModal.show();
+            }
+
+
+
+            async function orderNow() {
+                try {
+
+                    if (!selectedBookId) {
+                        alert("Book not selected!");
+                        return;
+                    }
+
+                    console.log("FINAL BOOK ID:", selectedBookId); // 🔥 DEBUG
+
+                    const title = document.getElementById('modalBookName').innerText;
+                    const price = document.getElementById('modalBookPrice').innerText;
+
+                    let res = await fetch("/user/send-email", {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            title: title,
+                            price: price,
+                            bookId: selectedBookId
+                        })
+                    });
+
+                    let data = await res.text();
+                    console.log("RAW RESPONSE:", data);
+
+                    try {
+                        data = JSON.parse(data);
+                        if (!data.error) {
+                            alert("Book Purchased Successfully ✔");
+
+                            // modal close
+                            let modal = bootstrap.Modal.getInstance(document.getElementById('buyModal'));
+                            modal.hide();
+
+                            // reload books (important)
+                            viewsubcategory(document.getElementById('categories').value);
+                        }
+                    } catch (e) {
+                        alert("Server error (not JSON)");
+                        return;
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+
+
+            
+            
+
+            async function Deletedata(id) {
+                var res = await fetch('/deletesubcategory/' + id, { method: 'DELETE' });
+                res = await res.json();
+                fetchcategories();
+            }
+        </script>
+
+
+</body>
+
+</html>
